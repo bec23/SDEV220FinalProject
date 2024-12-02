@@ -17,16 +17,18 @@ class Animal:
         }
 #adopter class
 class Adopter:
-    def __init__(self, id, name, contact):
+    def __init__(self, id, name, contact, approved):
         self.id = id
         self.name = name
         self.contact = contact
+        self.approved = approved
 
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'contact': self.contact
+            'approved': self.approved
         }
 #adpotion record class
 class AdoptionRecord:
