@@ -1,0 +1,86 @@
+import datetime
+
+class HumaneSociety:
+    def __init__(self):
+        self.animals = []
+        self.adopters = []
+        self.adoption_records = []
+
+    def add_animal(self, id, name, species, age, health):
+        animal = Animal(id, name, species, age, health)
+        self.animals.append(animal)
+        print(f"Animal added: {animal.to_dict()}")
+
+    def add_adopter(self, id, name, contact, approved):
+        adopter = Adopter(id, name, contact, approved)
+        self.adopters.append(adopter)
+        print(f"Adopter added: {adopter.to_dict()}")
+
+    def record_adoption(self, record_id, animal_id, adopter_id, adoption_date):
+        adoption_record = AdoptionRecord(record_id, animal_id, adopter_id, adoption_date)
+        self.adoption_records.append(adoption_record)
+        print(f"Adoption recorded: {adoption_record.to_dict()}")
+
+    def display_animals(self):
+        for animal in self.animals:
+            print(animal.to_dict())
+
+    def display_adopters(self):
+        for adopter in self.adopters:
+            print(adopter.to_dict())
+
+    def display_adoption_records(self):
+        for record in self.adoption_records:
+            print(record.to_dict())
+
+if __name__ == "__main__":
+    hs = HumaneSociety()
+
+    while True:
+        print("\nHumane Society Management System")
+        print("1. Add Animal")
+        print("2. Add Adopter")
+        print("3. Record Adoption")
+        print("4. Display Animals")
+        print("5. Display Adopters")
+        print("6. Display Adoption Records")
+        print("7. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            id = int(input("Enter animal ID: "))
+            name = input("Enter animal name: ")
+            species = input("Enter animal species: ")
+            age = int(input("Enter animal age: "))
+            health = input("Enter animal health status: ")
+            hs.add_animal(id, name, species, age, health)
+
+        elif choice == '2':
+            id = int(input("Enter adopter ID: "))
+            name = input("Enter adopter name: ")
+            contact = input("Enter adopter contact: ")
+            approved = input("Enter Y/N if approved: ")
+            hs.add_adopter(id, name, contact, approved)
+
+        elif choice == '3':
+            record_id = int(input("Enter adoption record ID: "))
+            animal_id = int(input("Enter animal ID: "))
+            adopter_id = int(input("Enter adopter ID: "))
+            adoption_date = input("Enter adoption date (YYYY-MM-DD): ")
+            hs.record_adoption(record_id, animal_id, adopter_id, adoption_date)
+
+        elif choice == '4':
+            hs.display_animals()
+
+        elif choice == '5':
+            hs.display_adopters()
+
+        elif choice == '6':
+            hs.display_adoption_records()
+
+        elif choice == '7':
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
