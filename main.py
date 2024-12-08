@@ -1,3 +1,4 @@
+#animal class
 class Animal:
     def __init__(self, id, name, species, age, health):
         self.id = id
@@ -14,20 +15,22 @@ class Animal:
             'age': self.age,
             'health': self.health
         }
-
+#adopter class
 class Adopter:
-    def __init__(self, id, name, contact):
+    def __init__(self, id, name, contact, approved):
         self.id = id
         self.name = name
         self.contact = contact
+        self.approved = approved
 
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'contact': self.contact
+            'approved': self.approved
         }
-
+#adpotion record class
 class AdoptionRecord:
     def __init__(self, record_id, animal_id, adopter_id, adoption_date):
         self.record_id = record_id
