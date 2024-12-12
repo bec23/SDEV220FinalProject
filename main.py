@@ -69,10 +69,13 @@ class Humane_Society_App:
     def create_widgets(self):
         
         #title
-        title_label=tk.Label(self.root, text= "Livingston County Humane Society Management System", font=("Helvetica", 24), fg="blue")
+        title_label=tk.Label(self.root, text= "Livingston County Humane Society Management System", font=("Helvetica", 20, "bold"), fg="blue")
         title_label.grid(row=0, column=0, columnspan=2, pady=10)
         
         # animal section
+        animal_section_label= tk.Label(self.root, text="Animal Section", font=("Helvetica", 12, "bold"))
+        animal_section_label.grid(row=1, column=0, columnspan=2, pady=5)
+        
         tk.Label(self.root, text="Animal Name:").grid(row=2, column=0)
         self.animal_name_entry = tk.Entry(self.root)
         self.animal_name_entry.grid(row=2, column=1)
@@ -85,44 +88,62 @@ class Humane_Society_App:
         self.age_entry = tk.Entry(self.root)
         self.age_entry.grid(row=4, column=1)
 
-        tk.Button(self.root, text="Add Animal", command=self.add_animal).grid(row=5, column=0, columnspan=2)
+        tk.Button(self.root, text="Add Animal", command=self.add_animal).grid(row=4, column=2, columnspan=2)
 
+        #line break
+        tk.Label(self.root, text="").grid(row=6, column=0, columnspan=3)
+        
         # adopter section
-        tk.Label(self.root, text="Adopter Name:").grid(row=6, column=0)
+        adopter_section_label = tk.Label(self.root, text="Adopter Section", font=("Helvetica", 12, "bold"))
+        adopter_section_label.grid(row=7, column=0, columnspan=2, pady=5)
+        
+        tk.Label(self.root, text="Adopter Name:").grid(row=8, column=0)
         self.adopter_name_entry = tk.Entry(self.root)
-        self.adopter_name_entry.grid(row=6, column=1)
+        self.adopter_name_entry.grid(row=8, column=1)
 
-        tk.Label(self.root, text="Contact Info:").grid(row=7, column=0)
+        tk.Label(self.root, text="Contact Info:").grid(row=9, column=0)
         self.contact_info_entry = tk.Entry(self.root)
-        self.contact_info_entry.grid(row=7, column=1)
+        self.contact_info_entry.grid(row=9, column=1)
 
-        tk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(row=8, column=0, columnspan=2)
+        tk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(row=9, column=2, columnspan=2)
 
-        tk.Label(self.root, text="Enter the adopter full name to approve adopter:").grid(row=9, column=0)
+        tk.Label(self.root, text="Enter the adopter full name to approve adopter:").grid(row=12, column=0)
         self.approve_adopter_entry = tk.Entry(self.root)
-        self.approve_adopter_entry.grid(row=9, column=1)
+        self.approve_adopter_entry.grid(row=12, column=1)
 
-        tk.Button(self.root, text="Approve", command=self.approve_adopter).grid(row=10, column=0, columnspan=2)
+        tk.Button(self.root, text="Approve", command=self.approve_adopter).grid(row=12, column=2, columnspan=2)
 
+        #line break
+        tk.Label(self.root, text="").grid(row=13, column=0, columnspan=3)
+        
         # adoption section
-        tk.Label(self.root, text="Animal to Adopt:").grid(row=11, column=0)
+        adoption_section_label= tk.Label(self.root, text="Adoption Section", font=("Helvetica", 12, "bold"))
+        adoption_section_label.grid(row=14, column=0, columnspan=2, pady=5)
+        
+        tk.Label(self.root, text="Animal to Adopt:").grid(row=15, column=0)
         self.adopt_animal_entry = tk.Entry(self.root)
-        self.adopt_animal_entry.grid(row=11, column=1)
+        self.adopt_animal_entry.grid(row=15, column=1)
 
-        tk.Label(self.root, text="Adopter Name:").grid(row=12, column=0)
+        tk.Label(self.root, text="Adopter Name:").grid(row=16, column=0)
         self.adopt_adopter_entry = tk.Entry(self.root)
-        self.adopt_adopter_entry.grid(row=12, column=1)
+        self.adopt_adopter_entry.grid(row=16, column=1)
 
-        tk.Label(self.root, text="Adoption Date (YYYY-MM-DD):").grid(row=13, column=0)
+        tk.Label(self.root, text="Adoption Date (YYYY-MM-DD):").grid(row=17, column=0)
         self.adoption_date_entry = tk.Entry(self.root)
-        self.adoption_date_entry.grid(row=13, column=1)
+        self.adoption_date_entry.grid(row=17, column=1)
 
-        tk.Button(self.root, text="Adopt Animal", command=self.adopt_animal).grid(row=14, column=0, columnspan=2)
+        tk.Button(self.root, text="Adopt Animal", command=self.adopt_animal).grid(row=17, column=2, columnspan=2)
+        
+        #line break
+        tk.Label(self.root, text="").grid(row=18,column=0, columnspan=2)
         
         #view buttons
-        tk.Button(self.root, text="View Animals", command=self.view_animals).grid(row=15, column=0, columnspan=2) 
-        tk.Button(self.root, text="View Adopters", command=self.view_adopters).grid(row=16, column=0, columnspan=2) 
-        tk.Button(self.root, text="View Adoptions", command=self.view_adoptions).grid(row=17, column=0, columnspan=2)
+        view_section_label = tk.Label(self.root, text="View Section", font=("Helvetica", 12, "bold"))
+        view_section_label.grid(row=19, column=0, columnspan=2, pady=5)
+        
+        tk.Button(self.root, text="View Animals", command=self.view_animals).grid(row=20, column=0, columnspan=2) 
+        tk.Button(self.root, text="View Adopters", command=self.view_adopters).grid(row=21, column=0, columnspan=2) 
+        tk.Button(self.root, text="View Adoptions", command=self.view_adoptions).grid(row=22, column=0, columnspan=2)
 
     def add_animal(self):
         name = self.animal_name_entry.get()
