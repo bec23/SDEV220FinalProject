@@ -91,8 +91,8 @@ class Humane_Society_App:
         tk.Button(self.root, text="Add Animal", command=self.add_animal).grid(row=4, column=2, columnspan=2)
 
         #line break
-        tk.Label(self.root, text="").grid(row=6, column=0, columnspan=3)
-        
+        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=6, column=0, columnspan=3, pady=10, sticky="we")
+                
         # adopter section
         adopter_section_label = tk.Label(self.root, text="Adopter Section", font=("Helvetica", 12, "bold"))
         adopter_section_label.grid(row=7, column=0, columnspan=2, pady=5)
@@ -107,6 +107,9 @@ class Humane_Society_App:
 
         tk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(row=9, column=2, columnspan=2)
 
+        #line break
+        tk.Label(self.root, text="").grid(row=10, column=0, columnspan=2)
+        
         tk.Label(self.root, text="Enter the adopter full name to approve adopter:").grid(row=12, column=0)
         self.approve_adopter_entry = tk.Entry(self.root)
         self.approve_adopter_entry.grid(row=12, column=1)
@@ -114,7 +117,7 @@ class Humane_Society_App:
         tk.Button(self.root, text="Approve", command=self.approve_adopter).grid(row=12, column=2, columnspan=2)
 
         #line break
-        tk.Label(self.root, text="").grid(row=13, column=0, columnspan=3)
+        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=13, column=0, columnspan=3, pady=10, sticky="we")
         
         # adoption section
         adoption_section_label= tk.Label(self.root, text="Adoption Section", font=("Helvetica", 12, "bold"))
@@ -135,7 +138,7 @@ class Humane_Society_App:
         tk.Button(self.root, text="Adopt Animal", command=self.adopt_animal).grid(row=17, column=2, columnspan=2)
         
         #line break
-        tk.Label(self.root, text="").grid(row=18,column=0, columnspan=2)
+        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=18,column=0, columnspan=3, pady=10, sticky="we")
         
         #view buttons
         view_section_label = tk.Label(self.root, text="View Section", font=("Helvetica", 12, "bold"))
