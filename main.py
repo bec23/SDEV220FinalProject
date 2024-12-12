@@ -109,7 +109,7 @@ class Humane_Society_App:
         tk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(row=10, column=1, columnspan=2, pady=5, sticky="w")
 
         #line break
-        tk.Label(self.root, text="").grid(row=10, column=0, columnspan=2)
+        tk.Label(self.root, text="").grid(row=11, column=0, columnspan=2)
         
         tk.Label(self.root, text="Enter the adopter full name to approve adopter:", anchor="w").grid(row=12, column=0, sticky="w")
         self.approve_adopter_entry = tk.Entry(self.root)
