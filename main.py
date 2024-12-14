@@ -1,211 +1,287 @@
-# Becky Rieger
-#program for Livingston County humane society. Enter animal, adopter, adoption record, and have function to approve adopter
-#view animals, adopters, and adoption records
+#becky rieger
+#program for livingston county humane society. enter animal, adopter, and adoption. function to approve adopter
+#do not allow adoption if adotper not approved. clear input fields once added. self generate id numbers. make important fields required.
+#view what has been added, mark adopted animals with red text in listbox
 
-#add classes: Animal, Adopter, Adoption_Record, Adoption_Center
+#import
+import tkinter as tk
+from tkinter import ttk, messagebox
+import datetime
+
+#animal class with fields, adopt status false until adopted to change text color once adopted
 class Animal:
-    def __init__(self, name, species, age):
+    def __init__(self, animal_id, name, animal_type, species, age, description):
+        self.animal_id = animal_id
         self.name = name
+        self.animal_type = animal_type
         self.species = species
         self.age = age
+        self.description = description
+        self.adopted = False
 
+#adopter class with fields
 class Adopter:
-    def __init__(self, name, contact_info, approved=False):
-        self.name = name
-        self.contact_info = contact_info
+    def __init__(self, adopter_id, first_name, last_name, address, city, state, zip_code, phone, approved):
+        self.adopter_id = adopter_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.city = city
+        self.state = state
+        self.zip_code = zip_code
+        self.phone = phone
         self.approved = approved
 
-class Adoption_Record:
-    def __init__(self, animal, adopter, date):
-        self.animal = animal
-        self.adopter = adopter
+#adoption class and fields
+class Adoption:
+    def __init__(self, animal_id, adopter_id, date):
+        self.animal_id = animal_id
+        self.adopter_id = adopter_id
         self.date = date
 
-class Adoption_Center:
-    def __init__(self):
-        self.animals = []
-        self.adopters = []
-        self.adoption_records = []
-
-#add animals, adopters, adoption records, and approve adopters
-    def add_animal(self, animal):
-        self.animals.append(animal)
-
-    def add_adopter(self, adopter):
-        self.adopters.append(adopter)
-
-    def approve_adopter(self, adopter_name):
-        adopter = next((a for a in self.adopters if a.name == adopter_name), None)
-        if adopter:
-            adopter.approved = True
-            return f"{adopter.name} has been approved."
-        return "Adopter not found."
-
-#record of the adoption, fail if adopter not approved
-    def record_adoption(self, animal_name, adopter_name, date):
-        animal = next((a for a in self.animals if a.name == animal_name), None)
-        adopter = next((a for a in self.adopters if a.name == adopter_name), None)
-        if animal and adopter and adopter.approved:
-            self.animals.remove(animal)
-            record = Adoption_Record(animal, adopter, date)
-            self.adoption_records.append(record)
-            return f"{adopter.name} has adopted {animal.name} on {date}."
-        return "Adoption failed. Animal or adopter not found, or adopter not approved."
-
-#GUI
-import tkinter as tk
-from tkinter import messagebox
-from datetime import datetime
-
-#creating the sections of app
+#main app
 class Humane_Society_App:
     def __init__(self, root):
         self.root = root
         self.root.title("Livingston County Humane Society")
-        self.center = Adoption_Center()
-
+        self.root.configure(bg='grey')
+        
+        #lists
+        self.animals = []
+        self.adopters = []
+        self.adoptions = []
+        
+        #widgets
         self.create_widgets()
-        
 
+    #create setions
     def create_widgets(self):
-        
-        #title
-        title_label=tk.Label(self.root, text= "Livingston County Humane Society Management System", font=("Helvetica", 20, "bold"), fg="blue")
-        title_label.grid(row=0, column=0, columnspan=2, pady=10)
-        
-        # animal section
-        animal_section_label= tk.Label(self.root, text="Add Animal", font=("Helvetica", 12, "bold"), anchor="w")
-        animal_section_label.grid(row=1, column=0, columnspan=2, pady=5, sticky="w")
-        
-        tk.Label(self.root, text="Animal Name:", anchor="w").grid(row=2, column=0, sticky="w")
-        self.animal_name_entry = tk.Entry(self.root)
-        self.animal_name_entry.grid(row=2, column=1, sticky="w")
+        #title, large blue print bolded, aligned left
+        title = tk.Label(self.root, text="Livingston County Humane Society Management System", font=("Helvetica", 20, "bold"), fg="dark blue", bg='grey')
+        title.grid(row=0, column=0, columnspan=3, pady=10)
 
-        tk.Label(self.root, text="Species:", anchor="w").grid(row=3, column=0, sticky="w")
-        self.species_entry = tk.Entry(self.root)
-        self.species_entry.grid(row=3, column=1, sticky="w")
+        #animal section, heading large and bolded, aligned left, name input field
+        ttk.Label(self.root, text="Animals", font=("Helvetica", 12, "bold"), background='grey').grid(column=0, row=1, sticky="w")
+        ttk.Label(self.root, text="Animal Name:", background='grey').grid(column=0, row=2, sticky="w")
+        self.animal_name = tk.Entry(self.root)
+        self.animal_name.grid(column=1, row=2, sticky="w")
 
-        tk.Label(self.root, text="Age:", anchor="w").grid(row=4, column=0, sticky="w")
-        self.age_entry = tk.Entry(self.root)
-        self.age_entry.grid(row=4, column=1, sticky="w")
+        #animal section, field animal type option box of cat or dog, aligned left
+        ttk.Label(self.root, text="Animal Type (Cat/Dog):", background='grey').grid(column=0, row=3, sticky="w")
+        self.animal_type = ttk.Combobox(self.root, values=["Cat", "Dog"])
+        self.animal_type.grid(column=1, row=3, sticky="w")
 
-        tk.Button(self.root, text="Add Animal", command=self.add_animal).grid(row=5, column=1, columnspan=2, pady=5, sticky="w")
+        #animal section, field species input, aligned left
+        ttk.Label(self.root, text="Species:", background='grey').grid(column=0, row=4, sticky="w")
+        self.species = tk.Entry(self.root)
+        self.species.grid(column=1, row=4, sticky="w")
 
-        #line break
-        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=6, column=0, columnspan=3, pady=10, sticky="we")
-                
-        # adopter section
-        adopter_section_label = tk.Label(self.root, text="Add Adopter", font=("Helvetica", 12, "bold"), anchor="w")
-        adopter_section_label.grid(row=7, column=0, columnspan=2, pady=5, sticky="w")
-        
-        tk.Label(self.root, text="Adopter Full Name:", anchor="w").grid(row=8, column=0, sticky="w")
-        self.adopter_name_entry = tk.Entry(self.root)
-        self.adopter_name_entry.grid(row=8, column=1, sticky="w")
+        #animal section, field age input, aligned left
+        ttk.Label(self.root, text="Age:", background='grey').grid(column=0, row=5, sticky="w")
+        self.age = tk.Entry(self.root)
+        self.age.grid(column=1, row=5, sticky="w")
 
-        tk.Label(self.root, text="Contact Info:", anchor="w").grid(row=9, column=0, sticky="w")
-        self.contact_info_entry = tk.Entry(self.root)
-        self.contact_info_entry.grid(row=9, column=1, sticky="w")
+        #animal section, field description input, aligned left
+        ttk.Label(self.root, text="Description:", background='grey').grid(column=0, row=6, sticky="w")
+        self.description = tk.Entry(self.root)
+        self.description.grid(column=1, row=6, sticky="w")
 
-        tk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(row=10, column=1, columnspan=2, pady=5, sticky="w")
+        #animal section, add animal button, aligned left
+        ttk.Button(self.root, text="Add Animal", command=self.add_animal).grid(column=0, row=7, sticky="w")
 
-        #line break
-        tk.Label(self.root, text="").grid(row=11, column=0, columnspan=2)
-        
-        tk.Label(self.root, text="Enter the adopter full name to approve adopter:", anchor="w").grid(row=12, column=0, sticky="w")
-        self.approve_adopter_entry = tk.Entry(self.root)
-        self.approve_adopter_entry.grid(row=12, column=1, sticky="w")
+        #section break
+        ttk.Separator(self.root, orient='horizontal').grid(column=0, row=9, columnspan=3, sticky='ew', pady=10)
 
-        tk.Button(self.root, text="Approve", command=self.approve_adopter).grid(row=13, column=1, columnspan=2, pady=5, sticky="w")
+        #adopter section, heading large and bolded, first name input field, aligned left
+        ttk.Label(self.root, text="Adopters", font=("Helvetica", 12, "bold"), background='grey').grid(column=0, row=10, sticky='w')
+        ttk.Label(self.root, text="First Name:", background='grey').grid(column=0, row=11, sticky='w')
+        self.first_name = tk.Entry(self.root)
+        self.first_name.grid(column=1, row=11, sticky='w')
 
-        #line break
-        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=14, column=0, columnspan=3, pady=10, sticky="we")
-        
-        # adoption section
-        adoption_section_label= tk.Label(self.root, text="Add Adoption Record", font=("Helvetica", 12, "bold"), anchor="w")
-        adoption_section_label.grid(row=15, column=0, columnspan=2, pady=5, sticky="w")
-        
-        tk.Label(self.root, text="Animal to Adopt:", anchor="w").grid(row=16, column=0, sticky="w")
-        self.adopt_animal_entry = tk.Entry(self.root)
-        self.adopt_animal_entry.grid(row=16, column=1, sticky="w")
+        #adopter section, last name input field, aligned left
+        ttk.Label(self.root, text="Last Name", background='grey').grid(column=0, row=12, sticky='w')
+        self.last_name = tk.Entry(self.root)
+        self.last_name.grid(column=1, row=12, sticky='w')
 
-        tk.Label(self.root, text="Adopter Name:", anchor="w").grid(row=17, column=0, sticky="w")
-        self.adopt_adopter_entry = tk.Entry(self.root)
-        self.adopt_adopter_entry.grid(row=17, column=1, sticky="w")
+        #adopter section, address input field, aligned left
+        ttk.Label(self.root, text="Address:", background='grey').grid(column=0, row=13, sticky='w')
+        self.address = tk.Entry(self.root)
+        self.address.grid(column=1, row=13, sticky='w')
 
-        tk.Label(self.root, text="Adoption Date (YYYY-MM-DD):", anchor="w").grid(row=18, column=0, sticky="w")
-        self.adoption_date_entry = tk.Entry(self.root)
-        self.adoption_date_entry.grid(row=18, column=1, sticky="w")
+        #adopter section, city input field, aligned left
+        ttk.Label(self.root, text="City:", background='grey').grid(column=0, row=14, sticky='w')
+        self.city = tk.Entry(self.root)
+        self.city.grid(column=1, row=14, sticky='w')
 
-        tk.Button(self.root, text="Adopt Animal", command=self.adopt_animal).grid(row=19, column=1, columnspan=2, pady=5, sticky="w")
-        
-        #line break
-        tk.Frame(self.root, height=2, bd=1, relief=tk.SUNKEN).grid(row=20,column=0, columnspan=3, pady=10, sticky="we")
-        
-        #view buttons
-        view_section_label = tk.Label(self.root, text="View Section", font=("Helvetica", 12, "bold"), anchor="w")
-        view_section_label.grid(row=21, column=0, columnspan=2, pady=5, sticky="w")
-        
-        tk.Button(self.root, text="View Animals", command=self.view_animals).grid(row=22, column=0, columnspan=2, pady=5, sticky='w') 
-        tk.Button(self.root, text="View Adopters", command=self.view_adopters).grid(row=22, column=1, columnspan=2, pady=5, sticky="w") 
-        tk.Button(self.root, text="View Adoptions", command=self.view_adoptions).grid(row=22, column=2, columnspan=2, pady=5, sticky="w")
+        #adopter section, state input field, aligned left
+        ttk.Label(self.root, text="State:", background='grey').grid(column=0, row=15, sticky='w')
+        self.state = tk.Entry(self.root)
+        self.state.grid(column=1, row=15, sticky='w')
 
+        #adopter section, zip code input field, aligned left
+        ttk.Label(self.root, text="Zip Code:", background='grey').grid(column=0, row=16, sticky='w')
+        self.zip_code = tk.Entry(self.root)
+        self.zip_code.grid(column=1, row=16, sticky='w')
+
+        #adopter section, phone input field, aligned left
+        ttk.Label(self.root, text="Phone:", background='grey').grid(column=0, row=17, sticky='w')
+        self.phone = tk.Entry(self.root)
+        self.phone.grid(column=1, row=17, sticky='w')
+
+        #adopter section, approve field default no with option box yes/no, aligned left
+        ttk.Label(self.root, text="Approved:", background='grey').grid(column=0, row=18, sticky='w')
+        self.approved_var = tk.StringVar(value="No")
+        self.approved = ttk.Combobox(self.root, textvariable=self.approved_var, values=["Yes", "No"])
+        self.approved.grid(column=1, row=18, sticky='w')
+
+        #adopter section, add adopter button, aligned left
+        ttk.Button(self.root, text="Add Adopter", command=self.add_adopter).grid(column=0, row=19, sticky='w')
+
+        #section break
+        ttk.Separator(self.root, orient='horizontal').grid(column=0, row=21, columnspan=3, sticky='ew', pady=10)
+
+        #adoption section, heading large and bolded, animal id input field, aligned left
+        ttk.Label(self.root, text="Adoptions", font=("Helvetica", 12, "bold"), background='grey').grid(column=0, row=22, sticky='w')
+        ttk.Label(self.root, text="Animal ID:", background='grey').grid(column=0, row=23, sticky='w')
+        self.animal_id = tk.Entry(self.root)
+        self.animal_id.grid(column=1, row=23, sticky='w')
+
+        #adoption section, adopter id input field, aligned left
+        ttk.Label(self.root, text="Adopter ID:", background='grey').grid(column=0, row=24, sticky='w')
+        self.adopter_id = tk.Entry(self.root)
+        self.adopter_id.grid(column=1, row=24, sticky='w')
+
+        #adoption section, adoption date input field with format, aligned left
+        ttk.Label(self.root, text="Adoption Date (YYYY-MM-DD):", background='grey').grid(column=0, row=25, sticky='w')
+        self.date = tk.Entry(self.root)
+        self.date.grid(column=1, row=25, sticky='w')
+
+        #adoption section, add adoption button, aligned left
+        ttk.Button(self.root, text="Add Adoption", command=self.add_adoption).grid(column=0, row=26, sticky='w')
+
+        #section break
+        ttk.Separator(self.root, orient='horizontal').grid(column=0, row=27, columnspan=3, sticky='ew', pady=10)
+
+        #view lists section, heading large and bolded, add view animals, view adopters, view adoptions buttons, aligned left
+        ttk.Label(self.root, text="View Lists", font=("Helvetica", 12, "bold"), background='grey').grid(column=0, row=28, sticky='w')
+        ttk.Button(self.root, text="View Animals", command=self.view_animals).grid(column=0, row=29, sticky='w')
+        ttk.Button(self.root, text="View Adopters", command=self.view_adopters).grid(column=1, row=29, sticky='w')
+        ttk.Button(self.root, text="View Adoptions", command=self.view_adoptions).grid(column=2, row=29, sticky='w')
+
+    #generate id and increase by one(for animal and adopter id)
+    def generate_id(self, collection):
+        return len(collection) + 1
+     
+     #add animal section, name, animal type and species is required, self generate animal id, 
+     #add animal to list, clear input fields once added, error message if required fields not filled out     
     def add_animal(self):
-        name = self.animal_name_entry.get()
-        species = self.species_entry.get()
-        age = self.age_entry.get()
-        animal = Animal(name, species, age)
-        self.center.add_animal(animal)
-        messagebox.showinfo("Success", f"Added {name} the {species}.")
-        self.animal_name_entry.delete(0,tk.END)
-        self.species_entry.delete(0, tk.END)
-        self.age_entry.delete(0, tk.END)
-        
+        name = self.animal_name.get()
+        animal_type = self.animal_type.get()
+        species = self.species.get()
+        age = self.age.get()
+        description = self.description.get()
+        if name and animal_type and species:
+            animal_id = self.generate_id(self.animals)
+            animal = Animal(animal_id, name, animal_type, species, age, description)
+            self.animals.append(animal)
+            self.animal_name.delete(0, tk.END)
+            self.animal_type.set('')
+            self.species.delete(0, tk.END)
+            self.age.delete(0, tk.END)
+            self.description.delete(0, tk.END)
+        else:
+            messagebox.showerror("Error", "Please fill in all required fields (Name, Animal Type, Species).")
+
+    #add adopter section, first name, last name, address, city, state, zip code and phone required, approved default no,
+    #generate adopter id, clear input fields once added, zip code and phone digit requirements, error message if zip and phone not formatted correct,add adopter to list, error message if required fields not completed
     def add_adopter(self):
-        name = self.adopter_name_entry.get()
-        contact_info = self.contact_info_entry.get()
-        adopter = Adopter(name, contact_info)
-        self.center.add_adopter(adopter)
-        messagebox.showinfo("Success", f"Added adopter {name}.")
-        self.adopter_name_entry.delete(0, tk.END) 
-        self.contact_info_entry.delete(0, tk.END)
+        first_name = self.first_name.get()
+        last_name = self.last_name.get()
+        address = self.address.get()
+        city = self.city.get()
+        state = self.state.get()
+        zip_code = self.zip_code.get()
+        phone = self.phone.get()
+        approved = self.approved_var.get()
+        if first_name and last_name and address and city and state and zip_code and phone:
+            if len(zip_code) == 5 and zip_code.isdigit() and len(phone) == 10 and phone.isdigit():
+                adopter_id = self.generate_id(self.adopters)
+                adopter = Adopter(adopter_id, first_name, last_name, address, city, state, zip_code, phone, approved)
+                self.adopters.append(adopter)
+                self.first_name.delete(0, tk.END)
+                self.last_name.delete(0, tk.END)
+                self.address.delete(0, tk.END)
+                self.city.delete(0, tk.END)
+                self.state.delete(0, tk.END)
+                self.zip_code.delete(0, tk.END)
+                self.phone.delete(0, tk.END)
+                self.approved_var.set("No")
+            else:
+                messagebox.showerror("Error", "Please enter a valid 5-digit zip code and a 10-digit phone number.")
+        else:
+            messagebox.showerror("Error", "Please fill in all required fields.")
 
-    def approve_adopter(self):
-        adopter_name = self.approve_adopter_entry.get()
-        result = self.center.approve_adopter(adopter_name)
-        messagebox.showinfo("Approval Result", result)
-        self.approve_adopter_entry.delete(0, tk.END)
-
-    def adopt_animal(self):
-        animal_name = self.adopt_animal_entry.get()
-        adopter_name = self.adopt_adopter_entry.get()
-        adoption_date = self.adoption_date_entry.get()
+    #add adoption section, date format, all fields required, success message, if adopter not approved get error message, mark as adopted
+    #if all fields are complete receive error message, clear input fields once added, add adoption to list, error message for date format
+    def add_adoption(self):
+        animal_id = self.animal_id.get()
+        adopter_id = self.adopter_id.get()
+        date = self.date.get()
         try:
-            datetime.strptime(adoption_date, "%Y-%m-%d")
-            result = self.center.record_adoption(animal_name, adopter_name, adoption_date)
-            messagebox.showinfo("Adoption Result", result)
+            datetime.datetime.strptime(date, '%Y-%m-%d')
+            if animal_id and adopter_id and date:
+                animal = next((a for a in self.animals if a.animal_id == int(animal_id)), None)
+                adopter = next((a for a in self.adopters if a.adopter_id == int(adopter_id)), None)
+                if animal and adopter and adopter.approved == "Yes":
+                    adoption = Adoption(animal_id, adopter_id, date)
+                    self.adoptions.append(adoption)
+                    animal.adopted = True
+                    self.animal_id.delete(0, tk.END)
+                    self.adopter_id.delete(0, tk.END)
+                    self.date.delete(0, tk.END)
+                    messagebox.showinfo("Success", "Adoption recorded successfully!")
+                else:
+                    messagebox.showerror("Error", "Adopter must be approved to adopt.")
+            else:
+                messagebox.showerror("Error", "Please fill in all required fields.")
         except ValueError:
-            messagebox.showerror("Error", "Invalid date format. Please use YYYY-MM-DD.")
+            messagebox.showerror("Error", "Please enter a valid date in YYYY-MM-DD format.")
 
-    #views
+    #view animal section, list in new window, change text to red if adopted
     def view_animals(self):
         view_window = tk.Toplevel(self.root)
-        view_window.title("Animals")
-        for i, animal in enumerate(self.center.animals):
-            tk.Label(view_window, text=f"{animal.name}, {animal.species}, {animal.age} years old").grid(row=i, column=0)
-            
+        view_window.title("Animals List")
+        animals_listbox = tk.Listbox(view_window)
+        animals_listbox.pack(fill=tk.BOTH, expand=True)
+        for animal in self.animals:
+            if animal.adopted:
+                animals_listbox.insert(tk.END, f"{animal.animal_id}: {animal.name}, ({animal.animal_type}, {animal.species}, {animal.age}, {animal.description})")
+                animals_listbox.itemconfig(tk.END, {'fg':'red'})
+            else:
+                animals_listbox.insert(tk.END, f"{animal.animal_id}: {animal.name}, ({animal.animal_type}, {animal.species}, {animal.age}, {animal.description})")
+
+    #view adopter section, list in new window, shows approved or not approved
     def view_adopters(self):
         view_window = tk.Toplevel(self.root)
-        view_window.title("Adopters")
-        for i, adopter in enumerate(self.center.adopters):
-            status = "Approved" if adopter.approved else "Not Approved"
-            tk.Label(view_window, text=f"{adopter.name}, {adopter.contact_info}, {status}").grid(row=i, colum=0)
-    
+        view_window.title("Adopters List")
+        adopters_listbox = tk.Listbox(view_window)
+        adopters_listbox.pack(fill=tk.BOTH, expand=True)
+        for adopter in self.adopters:
+            status = "Approved" if adopter.approved == "Yes" else "Not Approved"
+            adopters_listbox.insert(tk.END, f"{adopter.adopter_id}: {adopter.first_name} {adopter.last_name} ({adopter.address}, {adopter.city}, {adopter.state}, {adopter.zip_code}, {adopter.phone}, Approved: {status})")
+
+    #view adoption section, list in new window of all animal info and all adopter info
     def view_adoptions(self):
         view_window = tk.Toplevel(self.root)
-        view_window.title("Adoptions")
-        for i, record in enumerate(self.center.adoption_records):
-            tk.Label(view_window, text=f"{record.adopter.name} adopted {record.animal.name} on {record.date}").grid(row=i, column=0)
-                    
+        view_window.title("Adoptions List")
+        adoptions_listbox = tk.Listbox(view_window)
+        adoptions_listbox.pack(fill=tk.BOTH, expand=True)
+        for adoption in self.adoptions:
+            animal = next((a for a in self.animals if a.animal_id == int(adoption.animal_id)), None)
+            adopter = next((a for a in self.adopters if a.adopter_id == int(adoption.adopter_id)), None)
+            adoptions_listbox.insert(tk.END, f"Animal ID: {adoption.animal_id}, Name: {animal.name}, Type: {animal.animal_type}, Species: {animal.species}, Age: {animal.age}, Description: {animal.description}, Adopter ID: {adoption.adopter_id}, Name: {adopter.first_name} {adopter.last_name}, Address: {adopter.address}, City: {adopter.city}, State: {adopter.state}, Zip Code: {adopter.zip_code}, Phone: {adopter.phone}, Date: {adoption.date}")
+
+#loop
 if __name__ == "__main__":
     root = tk.Tk()
     app = Humane_Society_App(root)
